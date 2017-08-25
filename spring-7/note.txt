@@ -1,0 +1,73 @@
+1. Spring如何在Web應用中使用
+	1.) jar包:
+	
+		spring-web-4.3.9.RELEASE.jar
+		spring-webmvc-4.3.9.RELEASE.jar
+	
+	2.)Spring的配置文件,沒有什麼不同
+	
+	3.)如何創建IOC容器?
+		i. 非Web應用在main方法中直接創建
+	
+	   ii. Web應用因該在Web應用被伺服器加載時,就創建IOC容器:
+		       在ServletContextListener#contextInitialized(ServletContextEvent sce)方法中創建IOC容器.
+		
+	  iii.在web應用的其他組件中如何來訪問IOC容器?
+		       在ServletContextListener#contextInitialized(ServletContextEvent sce)方法中創建IOC容器後
+		       可以把其放在ServletContext(即Application域)的一個屬性中.
+		       
+	 iiii.實際上Spring配置文件的名字與配置因該也是可配置的!將其配置到當前WEB應用的初始化參數中較為合適.
+		
+	4.)在WEB環境下使用Spring
+		i.需要額外加入的jar包:
+			spring-web-4.3.9.RELEASE.jar
+			spring-webmvc-4.3.9.RELEASE.jar
+	   ii.Spring的配置文件,和非WEB環境沒有什麼不同
+	  iii.需要在web.xml文件中加入配置:
+	  
+			<!-- 配置Spring配置文件的名稱與位置 -->
+			<context-param>
+				<param-name>contextConfigLocation</param-name>
+				<param-value>classpath:applicationContext.xml</param-value>
+			</context-param>
+			<!-- 啟動Spring IOC 容器的ServletContextListener -->
+			<listener>
+				<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+			</listener>
+			
+	  		
+2. Spring如何整合Struts2 ?
+	1).整合目標? 使IOC容器來管理Struts2的Action!  Action就可以注入IOC容器中的其他的Bean(比如說注入各種Servlet)
+	
+	2).如何進行整合? 
+		 i.正常加入Struts2
+		 
+		ii.在 Spring 的 IOC 容器中配置Struts2 的Action
+		
+			注意:在IOC容器中配置Struts2的Action時,需要配置scope屬性,其值必須為prototype
+			
+			<bean id="perrsonAction" class="spring.struct2.actions.PerrsonAction" scope="prototype">
+				<property name="personService" ref="personService"></property>
+			</bean>
+	
+		iii.配置Struts2配置文件: Action節點的class需要只向IOC容器該Bean的ID
+		
+				<action name="person-save" class="perrsonAction">
+					<result>/success.jsp</result>
+				</action>
+			
+		iiii.加入一個jar包  
+		
+				struts2-spring-plugin-2.3.15.3.jar
+	
+	3).整合原理: 通過添加 struts2-spring-plugin-2.3.15.3.jar 之後,Struts2會先從IOC容器中獲取Action的實例
+		<SpringObjectFactory.java>
+		
+		if (appContext.containsBean(beanName)) {
+	            o = appContext.getBean(beanName);
+	        } else {
+	            Class beanClazz = getClassInstance(beanName);
+	            o = buildBean(beanClazz, extraContext);
+	        }
+
+

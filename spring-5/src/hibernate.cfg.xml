@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+		"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+		"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory>
+	<!-- 配置Hibernate的基本參數 -->
+		<!-- 1.DataSource須配置在IOC容器中,所以此處不需要配置DataSource -->
+		<!-- 2.配置.hbm.xml的部分(SessionFactory)也在IOC容器中去進行實例配置 -->
+		<!-- 3.配置Hibernate的基本屬性: 方言,SQL顯示及格式化,生成數據表的策略以及二級緩存...等 -->
+		<!-- 查詢全類名方法CTRL+SHIFT+T 找到該方法按右鍵 > Copy Qualified Name > CTRL + V -->
+		<property name="hibernate.dialect">org.hibernate.dialect.MySQL57Dialect</property>
+
+		<property name="hibernate.show_sql">true</property>
+		<property name="hibernate.format_sql">true</property>
+
+		<property name="hibernate.hbm2ddl.auto">update</property>
+
+		<!-- Hibernate : Disabling contextual LOB creation as createClob() method threw error -->
+		<!-- 當發生以上錯誤訊息時,將Hibernate的use_jdbc_metadata_defaults調為false -->
+		<property name="hibernate.temp.use_jdbc_metadata_defaults">false</property>
+
+		<!-- 配置Hibernate二級緩存相關屬性 -->
+
+	</session-factory>
+</hibernate-configuration>

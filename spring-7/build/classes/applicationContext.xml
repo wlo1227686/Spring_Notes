@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean id="" class="spring.struct2.bean.Person">
+		<property name="username" value="spring"></property>
+	</bean>
+	<bean id="personService" class="spring.struct2.services.PersonService">
+
+	</bean>
+	<!-- 注意:在IOC容器中配置Struts2的Action時,需要配置scope屬性,其值必須為prototype -->
+	<bean id="perrsonAction" class="spring.struct2.actions.PerrsonAction"
+		scope="prototype">
+		<property name="personService" ref="personService"></property>
+	</bean>
+
+</beans>

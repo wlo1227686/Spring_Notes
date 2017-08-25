@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="car" class="ch01.cycle.Car" init-method="init_by_chenfu"
+		destroy-method="destory_by_chenfu">
+		<property name="brand" value="Audi"></property>
+	</bean>
+
+	<!-- 配置bean的後置處理器 -->
+	<!-- 實作 BeanPostProcessor介面，並提供 -->
+	<!-- Object postProcessAfterInitialization(Object bean, String beanName):init-method之前 -->
+	<!-- Object postProcessBeforeInitialization(Object bean, String beanName):init-method之後 -->
+	<!-- bean: bean的位址 -->
+	<!-- beanName: IOC容器配置的Bean名字 -->
+	<!-- return: 返回給用戶的bean值。 可以在以上兩個方法中修改返回的bean值內容，或直接返回一個新的bean -->
+
+	<!-- 兩個方法的實作 不需要給id值，IOC容器會自動識別BeanPostProcessor -->
+	<bean class="ch01.cycle.MyBeanPostProcessor"></bean>
+
+	<!-- Bean的生命週期 -->
+	<!-- 1.通過IOC容器創建Bean -->
+	<!-- 2.將Bean的實例透過bean的後置處理器檢查postProcessBeforeInitialization -->
+	<!-- 3.IOC容器取用Bean的初始化方法(init) -->
+	<!-- 4.將Bean的實例透過bean的後置處理器檢查postProcessBeforeInitialization -->
+	<!-- 5.bean可以被使用 -->
+	<!-- 6.當IOC容器被關閉時，取用bean的destory方法 -->
+
+
+
+</beans>

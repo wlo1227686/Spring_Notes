@@ -1,0 +1,19 @@
+1.Spring 整合 Hibernate 的最終目標
+
+	1).用 Spring IOC 容器來管理 Hibernate 的SessionFactory
+	2).讓Hibernate使用Spring的Transaction Manager
+
+2.整合步驟:
+
+	1).加入Hibernate
+		i.jar檔
+		ii.添加Hibernate的配置文件: Hibernate.cfg.xml
+		iii.編寫持久化類對應的.hbm.xml文件 (Java_Bean -> Hibernate)
+	
+	2).加入Spring
+		i.jar檔
+		ii.加入Spring的配置文件
+	
+	3).整合 
+
+3.實際編寫	Business Logics

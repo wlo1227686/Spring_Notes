@@ -1,0 +1,61 @@
+1. SpringAOP
+
+1). 加入jar檔:
+<AOP部分>
+	aopalliance-1.0.jar
+	aspectjweaver-1.8.10.jar
+	spring-aop-4.2.1.RELEASE.jar
+	spring-aspects-4.2.1.RELEASE.jar
+
+<Spring部分>
+	commons-logging-1.2.jar
+	spring-beans-4.2.1.RELEASE.jar
+	spring-context-4.2.1.RELEASE.jar
+	spring-core-4.2.1.RELEASE.jar
+	spring-expression-4.2.1.RELEASE.jar
+	
+2).再配置文件中加入配置文件(ApplicationContext.xml)	
+	
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	
+3).基於助解的方式
+
+	1.再配置文件(ApplicationContext.xml)中宣告註解	
+		<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+		
+	2.把切面關注點的程式,宣告成受IOC容器控管
+		i.切面先宣告成受IOC容器控管的一個Bean,即加入@Component註解
+		ii.該切面還需要加入@Aspect註解
+	
+	3.在該切面中,宣告通知及監聽的某方法:
+		i.聲明一個方法
+			五種類型的通知註解
+				{
+					@Before:前置通知,在方法執行前執行通知 
+					@After :後置通知,在方法執行後執行通知(無論是否有例外事件)
+					@AfterRunning :返回通知,在方法返回結果(return)後執行通知
+					@AfterThrowing :異常通知,在方法執行中發生例外事件執行通知
+					@Around :環繞通知,環繞著方法執行通知
+				}
+		ii.在該方法前加入@Before註解
+			* : 任意修飾符&任意返回值&任意類別
+			                                     執行         ( 修飾符    返回值                                     包.       類別.          方法()         )
+			@Before("execution(public int ch02.aop.Impl.ArithmeticCalculator.*(int, int))")
+		
+	4.可以在通知方法中聲明一個類別為(JoinPoint)的參數,透過該參數取得細節. (方法名稱,參數值....)       	 
+		// Joinpoint : org.aopalliance.intercept.Joinpoint;
+		// JoinPoint : org.aspectj.lang.JoinPoint;
+		// 請選擇P為大寫的方法class為aspectj 才有getSignature()可以使用
+
+<實際範例>
+
+	@Before("execution(public int ch02.aop.Impl.ArithmeticCalculator.*(int, int))")
+	public void beforeMethod(JoinPoint joinPoint) {
+	
+		String methodName = joinPoint.getSignature().getName();
+		List<Object> args = Arrays.asList(joinPoint.getArgs());
+		
+		System.out.println("The method " + methodName + " begins with" + args);
+	}
+
+

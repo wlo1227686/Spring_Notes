@@ -1,0 +1,21 @@
+1. Spring如何在Web應用中使用
+	1.) jar包:
+	
+		spring-web-4.3.9.RELEASE.jar
+		spring-webmvc-4.3.9.RELEASE.jar
+	
+	2.)Spring的配置文件,沒有什麼不同
+	
+	3.)如何創建IOC容器?
+		i. 非Web應用在main方法中直接創建
+	
+	   ii. Web應用因該在Web應用被伺服器加載時,就創建IOC容器:
+		       在ServletContextListener#contextInitialized(ServletContextEvent sce)方法中創建IOC容器.
+		
+	  iii.在web應用的其他組件中如何來訪問IOC容器?
+		       在ServletContextListener#contextInitialized(ServletContextEvent sce)方法中創建IOC容器後
+		       可以把其放在ServletContext(即Application域)的一個屬性中.
+		       
+	 iiii.實際上Spring配置文件的名字與配置因該也是可配置的!將其配置到當前WEB應用的初始化參數中較為合適.
+		
+2. Spring如何整合Struct2 ?

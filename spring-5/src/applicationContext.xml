@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+	<!-- 配置一個自動掃描的包 -->
+	<context:component-scan base-package="spring.hibernate"></context:component-scan>
+	<!-- 1.配置DataSource -->
+	<!-- i.導入資源文件 -->
+	<context:property-placeholder location="classpath:db.properties" />
+
+	<bean id="dataSourceC3P0" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="user" value="${jdbc.user}"></property>
+		<property name="password" value="${jdbc.password}"></property>
+		<property name="driverClass" value="${jdbc.driverClass}"></property>
+		<property name="jdbcUrl" value="${jdbc.jdbcUrl}"></property>
+
+		<property name="initialPoolSize" value="${jdbc.initPoolSize}"></property>
+		<property name="maxPoolSize" value="${jdbc.maxPoolSize}"></property>
+	</bean>
+
+	<!-- 2.配置Hibernate 的SessionFactory 實例 :通過Spring提供的LocalSessionFactoryBean進行配置 -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<!-- 配置dataSource的屬性 -->
+		<property name="dataSource" ref="dataSourceC3P0"></property>
+		<!-- 配置hibernate配置文件的位置及名稱 -->
+		<!-- <property name="configLocation" value="classpath:hibernate.cfg.xml"></property> -->
+		<!-- 使用HibernateProperties屬性來配置Hibernate原生屬性 -->
+		<property name="hibernateProperties">
+		<props>
+			<prop key="hibernate.dialect">org.hibernate.dialect.MySQL57Dialect</prop>
+			<prop key="hibernate.show_sql">true</prop>
+			<prop key="hibernate.format_sql">true</prop>
+			<prop key="hibernate.hbm2ddl.auto">update</prop>
+			<prop key="hibernate.temp.use_jdbc_metadata_defaults">false</prop>
+		</props>
+		</property>
+		<!-- 配置hibernate的hbm.xml的路徑及名稱,可以使用萬用字元(用來自動生成SQL_TABLE) -->
+		<property name="mappingLocations"
+			value="classpath:spring/hibernate/entities/*.hbm.xml"></property>
+	</bean>
+
+	<!-- 3.配置Spring的Transaction -->
+	<!-- i.配置TransactionManager(Driver) -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+
+	<!-- ii.配置TransactionManager的屬性 -->
+
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="get*" read-only="true" />
+			<tx:method name="purchase" propagation="REQUIRES_NEW" />
+			<tx:method name="*" />
+		</tx:attributes>
+	</tx:advice>
+
+	<!-- iii.aop導入(配置切入點),哪些方法必須使用TransactionManager,並建立關聯 -->
+	<aop:config>
+		<aop:pointcut expression="execution(* spring.hibernate.service.*.*(..))"
+			id="txPointcut" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut" />
+	</aop:config>
+</beans>

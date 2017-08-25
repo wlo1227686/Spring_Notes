@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<!-- 手動裝配 -->
+	<bean id="address" class="ch01.autowire.Address" p:city="BeiJing"
+		p:street="HuiLongGuan"></bean>
+	<bean id="addres2" class="ch01.autowire.Address" p:city="Taipei"
+		p:street="Bench"></bean>
+
+	<bean id="car" class="ch01.autowire.Car" p:brand="Audi" p:price="1500000"></bean>
+	<!-- 自動裝配就是透過IOC容器來自動裝載Bean,Bean標籤內AutoWrie屬性來指定自動裝配模式 -->
+	<!-- (1)byType:根據型態來裝配,(2)byName:根據名稱來裝配(3)Constructor:根據建構子來裝配 (不推薦) -->
+
+	<!-- 可以使用autowire屬性自動裝配的方法(若有符合的就自動裝配，若沒有符合者就不裝配回傳null) -->
+	<!-- byName是根據bean的id名稱與當前bean的setter方法的屬性名稱自動裝配 -->
+	<!-- byType是根據bean的類型和當前bean的屬性的類型進行自動裝配,前提是該類型在IOC容器中必須是唯一的(class必須是唯一) -->
+	<bean id="person" class="ch01.autowire.Person" p:name="Tom"
+		autowire="byName"></bean>
+	<!-- 如果該bean使用自動裝配(AutoWire)就必須有所限制(缺點) -->
+	<!-- 1.無法對該bean內的單一屬性使用AutoWire(共同進退，要死就一起死的概念) -->
+	<!-- 2.ByName與ByType不能同時存在於同個bean內 (魚與熊掌不能兼得,有你就沒有我的世仇關係) -->
+	<!-- 總結: 自動裝配在實際操作中比較少出現，與其使用自動裝配功能所帶來的便利性，不如明確清晰的手動裝配來的更簡潔 -->
+
+</beans>

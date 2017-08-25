@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- 使用bean的scope 屬性來配置bean的作用域 -->
+	<!-- singleton:(def) 在IOC容器的生命週期內，只會new一次 -->
+	<!-- prototype: 在IOC容器初始化時，不會new該bean而是在每次請求new該bean時，並返回 -->
+	<!-- request: 使用時機較少 -->
+	<!-- session: 使用時機較少 -->
+	<bean id="car" class="ch01.autowire.Car" scope="prototype">
+		<property name="brand" value="Audi"></property>
+		<property name="price" value="1500000"></property>
+	</bean>
+	
+</beans>

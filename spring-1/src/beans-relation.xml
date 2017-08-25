@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- 當bean內的屬性abstract="true"時，該bean不可以被IOC容器實例化，只能用來被繼承配置 -->
+	<!-- 若某一個bean的class沒有被指定時，該bean必須是一個抽象(abstract)bean -->
+	<!-- bean的class屬性可以不指定，但是該bean必須為抽象(abstract)bean -->
+	<bean id="address" p:city="BeiJing" p:street="WuDaoKou" abstract="true"></bean>
+
+	<!-- bean配置繼承，使用bean的parent屬性指定繼承哪個IOC內的bean的配置 -->
+	<!-- 子bean可以繼承父bean的class跟屬性，也可以覆寫父bean的屬性 -->
+	<!-- 並不是所有父bean內的屬性都會被繼承例如(abstract) -->
+	<bean id="address2" class="ch01.autowire.Address" parent="address"></bean>
+	<bean id="address3" class="ch01.autowire.Address" p:street="DaZhongSi"
+		parent="address2"></bean>
+	<bean id="car" class="ch01.autowire.Car" p:brand="Audi" p:price="1500000"></bean>
+	<!-- 要求在配置person必須有一個關聯的car! 該bean必須依賴Car這個Bean (這裡面的範圍都是限制在同一個IOC容器中) -->
+	<bean id="person" class="ch01.autowire.Person" p:name="Tom"
+		p:address-ref="address2" depends-on="car"></bean>
+</beans>

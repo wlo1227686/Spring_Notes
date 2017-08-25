@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<!-- 配置一個bean class: bean 的全類名,透過反射的方式在IOC容器中創建Bean，所以Bean必須提供無參數的建構子 id: 
+		標識容器的id值 -->
+	<bean id="helloword2" class="ch01.HelloWord">
+		<property name="name" value="Spring"></property>
+	</bean>
+
+	<!-- 透過屬性注入來注入屬性值 -->
+	<!-- <bean id="helloword1" class="ch01.HelloWord"> -->
+	<!-- <property name="name" value="Spring"></property> -->
+	<!-- </bean> -->
+
+	<!-- IOC(Inversion of Control)容器:反轉資源獲取的方向 -->
+	<!-- 以前: 先new一個類別 透過new起來的位置去查該資源 (以前去市場買菜要一攤一攤找材料，要買魚就去魚店、要買菜就去蔬菜店) -->
+	<!-- 現在: 告訴IOC容器我需要某個類別，容器就會找給我 (現在在你家門口放一個箱子上面寫我需要甚麼材料，店家自己會將需要的物品放在你的箱子裡) -->
+
+	<!-- DI(Dependency Injection)依賴注入:依賴IOC容器把資源注入給我 -->
+	<!-- 屬性注入: 透過Setter方法(JavaBean內的Get/Set)注入Bean的屬性值或依賴的對象 -->
+
+	<!-- 透過建構子來注入屬性值 -->
+	<bean id="car" class="ch01.Car">
+		<!-- 依照參數順序配值 -->
+		<!-- <constructor-arg value="Audi"></constructor-arg> -->
+		<!-- <constructor-arg value="taipei"></constructor-arg> -->
+		<!-- <constructor-arg value="1500000"></constructor-arg> -->
+		<!-- 依照index來配值 -->
+		<constructor-arg value="Audi" index="0"></constructor-arg>
+		<constructor-arg value="taipei" index="1"></constructor-arg>
+		<constructor-arg value="1500000" type="double"></constructor-arg>
+	</bean>
+
+	<bean id="car2" class="ch01.Car">
+		<!-- 透過類型來區分建構子 -->
+		<constructor-arg value="Baoma" type="java.lang.String"></constructor-arg>
+		<!-- 在xml檔中<>為關鍵字，如果有需要使用必須使用特殊轉換符號 <!CDATA[請放特殊符號]>來處理特殊字符 -->
+		<constructor-arg type="java.lang.String">
+			<value><![CDATA[<taipei^@>]]></value>
+		</constructor-arg>
+		<!-- 屬性值可以使用Value子結點注入 -->
+		<constructor-arg type="int">
+			<value>250</value>
+		</constructor-arg>
+
+	</bean>
+	<bean id="person" class="ch01.Person">
+		<property name="name" value="Tom"></property>
+		<property name="age" value="24"></property>
+		<!-- 可以使用property的ref屬性，建立bean之間的引用關係 -->
+		<!-- <property name="car" ref="car2"></property> -->
+
+		<!-- 使用ref標籤來建立bean之間的引用關係 -->
+		<!-- <property name="car"> -->
+		<!-- <ref bean="car2" /> -->
+		<!-- </property> -->
+
+		<!-- 內部bean,不能被外部引用 -->
+		<property name="car">
+			<bean class="ch01.Car">
+				<constructor-arg value="Ford"></constructor-arg>
+				<constructor-arg value="Changon"></constructor-arg>
+				<constructor-arg value="1000000" type="double"></constructor-arg>
+			</bean>
+		</property>
+		<property name="car.maxSpeed" value="260"></property>
+	</bean>
+
+	<bean id="person2" class="ch01.Person">
+		<constructor-arg value="Jerry"></constructor-arg>
+		<constructor-arg value="25"></constructor-arg>
+		<!-- <constructor-arg ref="car"></constructor-arg> -->
+
+		<!-- 測試賦予值為null -->
+		<!-- <constructor-arg> -->
+		<!-- <null /> -->
+		<!-- </constructor-arg> -->
+
+		<constructor-arg ref="car"></constructor-arg>
+		<!-- 為類別屬性附值 ,注意屬性必須先初始化才能為類別屬性附值.否則會異常,和struct2不同 -->
+		<property name="car.maxSpeed" value="350"></property>
+	</bean>
+
+	<bean id="person3" class="ch01.collections.Person">
+		<property name="name" value="Mike"></property>
+		<property name="age" value="28"></property>
+		<property name="cars">
+			<!-- 使用list結點為List類型屬性附值 -->
+			<list>
+				<ref bean="car" />
+				<ref bean="car2" />
+				<bean class="ch01.Car">
+					<constructor-arg value="Ford"></constructor-arg>
+					<constructor-arg value="Changon"></constructor-arg>
+					<constructor-arg value="1000000" type="double"></constructor-arg>
+				</bean>
+			</list>
+		</property>
+
+
+	</bean>
+
+	<!-- 配置Map屬性值 -->
+	<bean id="NewPerson" class="ch01.collections.NewPerson">
+		<property name="name" value="Rose"></property>
+		<property name="age" value="28"></property>
+		<property name="cars">
+			<!-- 使用map結點及entry的子結點配置map的成員變量 -->
+			<map>
+				<entry key="AA" value-ref="car"></entry>
+				<entry key="BB" value-ref="car2"></entry>
+			</map>
+		</property>
+	</bean>
+
+
+
+	<!-- 配置Properties屬性值 -->
+	<bean id="dataSource" class="ch01.collections.DataSource">
+		<property name="properties">
+			<!-- 使用props和prop子結點來為properties屬性來附值 -->
+			<props>
+				<prop key="user">root</prop>
+				<prop key="password">1234</prop>
+				<prop key="jdbcUrl">jdbc:mysql:///test</prop>
+				<prop key="driverClass">com.mysql.jdbc.Driver</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- 配置單例的集合bean(Map,List,Prop),以供多個bean來引用,需要導入util命名空間 -->
+	<util:list id="carsutil">
+		<ref bean="car" />
+		<ref bean="car2" />
+	</util:list>
+	<bean id="person4" class="ch01.collections.Person">
+		<property name="name" value="chenfu"></property>
+		<property name="age" value="28"></property>
+		<property name="cars" ref="carsutil"></property>
+	</bean>
+	<!-- 通過p標籤來為bean的屬性附值 ,必須先導入p標籤 (相對於傳統配置方式會更加精簡與方便) -->
+	<bean id="person5" class="ch01.collections.Person" p:age="30"
+		p:name="ccf" p:cars-ref="carsutil"></bean>
+
+</beans>
+
+
