@@ -2,7 +2,7 @@
 <br>
 
 
-![alt text](https://github.com/wlo1227686/InterView/blob/master/Spring_Notes/img01.jpg)<br>
+![alt text](https://github.com/wlo1227686/Spring_Notes/blob/master/img01.jpg)<br>
 
 
 <br>Video: (Google Drive)<br>
