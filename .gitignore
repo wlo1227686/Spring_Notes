@@ -4,10 +4,7 @@
 # Log file
 *.log
 
-.classpath
-*.classpath
-
-.project
+bin
 target
 
 
@@ -22,5 +19,5 @@ target
 *.rar
 
 target/
-
+bin/
 
